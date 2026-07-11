@@ -19,7 +19,7 @@ export default function WindowFrame({
   id,
   title,
   zIndex,
-  initialX = 6,
+  initialX = 16,
   initialY = 40,
   width = 640,
   height = 460,
