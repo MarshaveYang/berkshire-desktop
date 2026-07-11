@@ -16,10 +16,10 @@ export default function WindowFrame({
   id,
   title,
   zIndex,
-  initialX = 160,
-  initialY = 100,
-  width = 640,
-  height = 460,
+  initialX = 16,
+  initialY = 40,
+  width = 460,
+  height = 640,
   children
 }: WindowFrameProps) {
   const closeWindow = useAppStore((s) => s.closeWindow);
@@ -49,7 +49,7 @@ export default function WindowFrame({
   }
 
   const frameStyle = isMaximized
-    ? { left: 16, top: 40, right: 16, bottom: 16, width: "auto", height: "auto", zIndex }
+    ? { left: 6, top: 30, right: 6, bottom: 6, width: "auto", height: "auto", zIndex }
     : { left: pos.x, top: pos.y, width, height, zIndex };
 
   return (
