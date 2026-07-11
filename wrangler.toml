@@ -9,7 +9,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "berkshire-desktop-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "591b1178-52e2-43ea-84a7-9b8de3340a67"
 
 # 下面这些不要写在这里（wrangler.toml 会被提交到 git）。
 # 请用 `wrangler pages secret put <NAME>` 或 Cloudflare 控制台的
