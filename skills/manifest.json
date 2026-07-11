@@ -1,0 +1,52 @@
+[
+  {
+    "id": "investment-research",
+    "name": "综合投研",
+    "subtitle": "四大师深度分析",
+    "icon": "📊",
+    "file": "investment-research.md",
+    "argHint": "输入股票代码或公司名，如 腾讯 / NVDA",
+    "supportsMulti": false,
+    "description": "最全面的单公司深度研究框架：生意本质(段永平) → 护城河(巴菲特) → 逆向思考(芒格) → 管理层评估 → 文明趋势(李录) → 估值与安全边际。适合对一家上市公司做全方位投资研究。"
+  },
+  {
+    "id": "investment-team",
+    "name": "投研团队",
+    "subtitle": "多视角并行分析",
+    "icon": "🧑‍🤝‍🧑",
+    "file": "investment-team.md",
+    "argHint": "输入股票代码或公司名",
+    "supportsMulti": false,
+    "description": "模拟真实投研团队：商业模式(段永平)、财务估值(巴菲特)、行业竞争(芒格)、风险管理层(李录) 四个视角并行研究，最终汇总为综合研判报告。适合需要更快、更多角度同时分析的场景。"
+  },
+  {
+    "id": "investment-checklist",
+    "name": "买入清单",
+    "subtitle": "巴菲特六关筛选",
+    "icon": "✅",
+    "file": "investment-checklist.md",
+    "argHint": "支持多个公司，逗号分隔，如 腾讯, 茅台, 英伟达",
+    "supportsMulti": true,
+    "description": "巴菲特买入前六关快速筛选：能力圈、好生意、护城河、管理层、安全边际、决策纪律。10 分钟内决定一家公司是否值得深入研究，支持多公司对比。"
+  },
+  {
+    "id": "industry-research",
+    "name": "产业扫描",
+    "subtitle": "全产业链机会",
+    "icon": "🏭",
+    "file": "industry-research.md",
+    "argHint": "输入行业/主题，如 核电 / 人形机器人",
+    "supportsMulti": false,
+    "description": "从一个投资主题出发，完成产业链全景研究：投资逻辑链 → 产业链全景图 → 全球上市公司扫描 → 各环节头部公司分析 → 投资组合配置建议。"
+  },
+  {
+    "id": "private-company-research",
+    "name": "一级研究",
+    "subtitle": "未上市公司深挖",
+    "icon": "🕵️",
+    "file": "private-company-research.md",
+    "argHint": "输入公司名，如 SpaceX / 蚂蚁集团",
+    "supportsMulti": false,
+    "description": "专为信息稀缺的未上市公司设计的侦探式研究框架：多源财务数据拼凑、置信度标注、多方法估值交叉验证、退出路径分析。"
+  }
+]

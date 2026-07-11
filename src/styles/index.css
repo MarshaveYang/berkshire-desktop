@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.desktop-wallpaper {
+  background: radial-gradient(circle at 20% 20%, #4a5cff 0%, transparent 45%),
+    radial-gradient(circle at 80% 30%, #8a4cff 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, #2c2f7a 0%, transparent 55%),
+    linear-gradient(160deg, #0f1130 0%, #1a1b3d 45%, #241b45 100%);
+}
+
+.glass-panel {
+  background: rgba(30, 30, 45, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.window-titlebar {
+  background: rgba(50, 50, 65, 0.9);
+  backdrop-filter: blur(16px);
+}
+
+.traffic-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+/* React Flow 画布上不需要看到控制台/背景网格线，做一点隐藏 */
+.react-flow__attribution {
+  display: none;
+}
