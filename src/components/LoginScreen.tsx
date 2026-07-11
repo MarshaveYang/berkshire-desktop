@@ -39,7 +39,7 @@ export default function LoginScreen() {
         <span>投研</span>
         <span>桌面</span>
       </div>
-      <div className="text-ink2 mb-4">AI Berkshire</div>
+      <div className="text-ink2 mb-4">买股票，从 AI Berkshire 开始</div>
 
       <form onSubmit={handleSubmit} className="flex flex-col items-center gap-3">
         <input
