@@ -18,7 +18,7 @@ export default function WindowFrame({
   zIndex,
   initialX = 16,
   initialY = 40,
-  width = 408,
+  width = 308,
   height = 680,
   children
 }: WindowFrameProps) {
