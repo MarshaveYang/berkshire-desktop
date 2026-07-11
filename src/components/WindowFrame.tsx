@@ -84,7 +84,7 @@ export default function WindowFrame({
   }
 
   const frameStyle = isMaximized
-    ? { left: 6, top: 30, right: 6, bottom: 6, width: "auto", height: "auto", zIndex }
+    ? { left: 16, top: 40, right: 16, bottom: 16, width: "auto", height: "auto", zIndex }
     : { left: pos.x, top: pos.y, width: size.width, height: size.height, zIndex };
 
   return (

@@ -11,7 +11,7 @@ export default function SkillInfoWindow({
   skill: SkillPublic;
 }) {
   return (
-    <WindowFrame id={id} title={skill.name} zIndex={zIndex} width={408} height={320}>
+    <WindowFrame id={id} title={skill.name} zIndex={zIndex} width={408} height={310}>
       <div className="p-6 text-sm leading-relaxed">
         <div className="text-lg font-medium mb-1 text-ink">{skill.name}</div>
         <div className="text-ink2/70 mb-4">{skill.subtitle}</div>

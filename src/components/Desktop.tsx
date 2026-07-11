@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useAppStore } from "../lib/store";
 import { api } from "../lib/api";
 import IconTile from "./IconTile";
@@ -6,6 +6,10 @@ import CenterSearchBar from "./CenterSearchBar";
 import ReportsFolderWindow from "./ReportsFolderWindow";
 import ReportViewerWindow from "./ReportViewerWindow";
 import SkillInfoWindow from "./SkillInfoWindow";
+
+// three.js 体积不小，懒加载成单独的 chunk，不拖慢首屏加载；
+// 加载完成前背景就是普通的渐变色，线条效果会稍晚一点"淡入"出现。
+const FloatingLinesBackground = lazy(() => import("./FloatingLinesBackground"));
 
 export default function Desktop() {
   const skills = useAppStore((s) => s.skills);
@@ -29,6 +33,20 @@ export default function Desktop() {
 
   return (
     <div className="app-viewport desktop-wallpaper relative overflow-hidden text-ink">
+      {/* 动态线条背景，叠在渐变之上、图标和窗口之下 */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Suspense fallback={null}>
+          <FloatingLinesBackground
+            linesGradient={["#10B981", "#198c66", "#1a5542"]}
+            enabledWaves={["middle", "top", "bottom"]}
+            lineCount={9}
+            lineDistance={80}
+            animationSpeed={0.5}
+            bendRadius={15}
+            bendStrength={3.5}
+          />
+        </Suspense>
+      </div>
       {/* 顶部菜单栏 */}
       <div className="fixed top-0 left-0 right-0 h-7 glass-panel flex items-center px-4 text-xs z-40 justify-between text-ink2">
         <div className="font-medium text-ink">AI Berkshire</div>
