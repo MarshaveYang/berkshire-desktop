@@ -12,25 +12,37 @@ body,
 body {
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
+  color: #16342a;
 }
 
+/* 浅绿色渐变背景，牛市配色 */
 .desktop-wallpaper {
-  background: radial-gradient(circle at 20% 20%, #4a5cff 0%, transparent 45%),
-    radial-gradient(circle at 80% 30%, #8a4cff 0%, transparent 45%),
-    radial-gradient(circle at 50% 90%, #2c2f7a 0%, transparent 55%),
-    linear-gradient(160deg, #0f1130 0%, #1a1b3d 45%, #241b45 100%);
+  background: radial-gradient(circle at 15% 15%, #d6f2df 0%, transparent 42%),
+    radial-gradient(circle at 85% 25%, #bfe9cf 0%, transparent 46%),
+    radial-gradient(circle at 50% 95%, #a9dcbd 0%, transparent 55%),
+    linear-gradient(160deg, #f3faf5 0%, #e6f5eb 45%, #d7ecdf 100%);
 }
 
+/* 通用磨砂玻璃面板 */
 .glass-panel {
-  background: rgba(30, 30, 45, 0.55);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(22, 90, 60, 0.14);
+}
+
+.glass-panel-strong {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+  border: 1px solid rgba(22, 90, 60, 0.16);
 }
 
 .window-titlebar {
-  background: rgba(50, 50, 65, 0.9);
+  background: rgba(233, 246, 237, 0.85);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(22, 90, 60, 0.1);
 }
 
 .traffic-light {
@@ -40,7 +52,11 @@ body {
   display: inline-block;
 }
 
-/* React Flow 画布上不需要看到控制台/背景网格线，做一点隐藏 */
-.react-flow__attribution {
-  display: none;
+/* App 图标：纯文字四字方块，字体贴近微软雅黑 */
+.icon-glyph {
+  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Arial,
+    sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
 }

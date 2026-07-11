@@ -48,7 +48,7 @@ export default function WindowFrame({
 
   return (
     <div
-      className="absolute rounded-xl overflow-hidden shadow-2xl glass-panel flex flex-col text-white"
+      className="absolute rounded-xl overflow-hidden shadow-2xl glass-panel-strong flex flex-col text-ink"
       style={{ left: pos.x, top: pos.y, width, height, zIndex }}
       onPointerDownCapture={() => focusWindow(id)}
     >
@@ -63,9 +63,9 @@ export default function WindowFrame({
           className="traffic-light bg-red-500 hover:brightness-110"
           title="关闭"
         />
-        <span className="traffic-light bg-yellow-500 opacity-60" />
-        <span className="traffic-light bg-green-500 opacity-60" />
-        <div className="flex-1 text-center text-sm text-white/80 truncate pr-12">{title}</div>
+        <span className="traffic-light bg-yellow-500 opacity-70" />
+        <span className="traffic-light bg-mint-500 opacity-70" />
+        <div className="flex-1 text-center text-sm text-ink2 truncate pr-12">{title}</div>
       </div>
       <div className="flex-1 overflow-auto">{children}</div>
     </div>

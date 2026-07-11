@@ -30,6 +30,7 @@ export interface SkillDef {
   icon: string;
   file: string;
   argHint: string;
+  usageHint: string;
   supportsMulti: boolean;
   description: string;
   promptTemplate: string;

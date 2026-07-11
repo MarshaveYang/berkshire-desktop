@@ -43,26 +43,26 @@ export default function ReportsFolderWindow({ zIndex }: { zIndex: number }) {
   return (
     <WindowFrame id="reportsFolder" title="研究报告" zIndex={zIndex} width={720} height={480}>
       <div className="flex flex-col h-full">
-        <div className="flex items-center gap-4 px-4 py-2 text-xs text-white/60 border-b border-white/10">
-          <button onClick={() => toggleSort("date")} className={sort === "date" ? "text-white" : ""}>
+        <div className="flex items-center gap-4 px-4 py-2 text-xs text-ink2/70 border-b border-ink/10">
+          <button onClick={() => toggleSort("date")} className={sort === "date" ? "text-ink" : ""}>
             按日期排序 {sort === "date" && (order === "asc" ? "↑" : "↓")}
           </button>
-          <button onClick={() => toggleSort("name")} className={sort === "name" ? "text-white" : ""}>
+          <button onClick={() => toggleSort("name")} className={sort === "name" ? "text-ink" : ""}>
             按文件名排序 {sort === "name" && (order === "asc" ? "↑" : "↓")}
           </button>
-          <button onClick={refresh} className="ml-auto hover:text-white">
+          <button onClick={refresh} className="ml-auto hover:text-ink">
             ⟳ 刷新
           </button>
         </div>
 
         {reports.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center text-white/40 text-sm">
-            还没有报告，去顶部搜索栏生成第一份吧
+          <div className="flex-1 flex items-center justify-center text-ink2/50 text-sm">
+            还没有报告，去中间搜索框生成第一份吧
           </div>
         ) : (
           <div className="flex-1 overflow-auto p-2">
             <table className="w-full text-sm">
-              <thead className="text-white/40 text-xs">
+              <thead className="text-ink2/50 text-xs">
                 <tr className="text-left">
                   <th className="font-normal py-1 px-2">名称</th>
                   <th className="font-normal py-1 px-2">技能</th>
@@ -75,14 +75,14 @@ export default function ReportsFolderWindow({ zIndex }: { zIndex: number }) {
                   <tr
                     key={r.id}
                     onDoubleClick={() => r.status === "done" && openReport(r.id, r.title)}
-                    className={`border-t border-white/5 hover:bg-white/10 cursor-default ${
+                    className={`border-t border-ink/5 hover:bg-mint-100/50 cursor-default ${
                       r.status === "done" ? "cursor-pointer" : "opacity-60"
                     }`}
                   >
-                    <td className="py-2 px-2">📄 {r.title}</td>
-                    <td className="py-2 px-2 text-white/60">{r.skill_name}</td>
-                    <td className="py-2 px-2 text-white/60">{STATUS_LABEL[r.status] ?? r.status}</td>
-                    <td className="py-2 px-2 text-white/40">
+                    <td className="py-2 px-2 text-ink">{r.title}</td>
+                    <td className="py-2 px-2 text-ink2/70">{r.skill_name}</td>
+                    <td className="py-2 px-2 text-ink2/70">{STATUS_LABEL[r.status] ?? r.status}</td>
+                    <td className="py-2 px-2 text-ink2/50">
                       {new Date(r.created_at).toLocaleString("zh-CN")}
                     </td>
                   </tr>

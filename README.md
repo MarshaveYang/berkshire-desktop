@@ -2,29 +2,37 @@
 
 把 [ai-berkshire](https://github.com/xbtlin/ai-berkshire) 的投研 Skill 合集，包装成一个「登录后像打开一台 Mac」的网页应用。
 
-- 前端：React + TypeScript + Vite + [React Flow](https://reactflow.dev/)（桌面图标画布）+ Tailwind
+- 前端：React + TypeScript + Vite + Tailwind，纯文字图标 + 磨砂玻璃质感
 - 后端：Cloudflare Pages Functions（无需单独服务器）
 - 存储：Cloudflare D1（报告元数据 + Markdown 正文）
 - 认证：单密码 + HMAC 签名 Cookie（个人使用场景，没有做多用户系统）
-- 模型：后台统一配置 API Key，**默认使用 DeepSeek**，Claude / OpenAI / MiniMax 作为可切换备选
+- 模型：后台统一配置 API Key，**默认 DeepSeek**，Claude / OpenAI / MiniMax 作为可切换备选
+- 部署方式：**全程网页操作**——GitHub 网页上传或 GitHub Desktop 推代码，Cloudflare Dashboard 建库、配变量、连仓库，不需要装 wrangler CLI
 
-## 功能对应关系
+## 界面交互说明
 
-| 你的需求 | 实现方式 |
-|---|---|
-| 打开网站像登录一台 mac，设置密码防滥用 | `LoginScreen` 锁屏页 + `/api/auth/login` 单密码校验 + HttpOnly Cookie |
-| 中间是过去生成的报告，像打开的文件夹，可按日期/文件名排序 | `ReportsFolderWindow`，Finder 风格列表 + 排序 |
-| 旁边 5 个技能像桌面图标，双击打开介绍 | React Flow 画布 + `DesktopIconNode` + `SkillInfoWindow` |
-| 顶部搜索栏输入股票代码 + 选技能 → 生成报告 | `TopSearchBar` → `POST /api/reports` |
-| 双击报告打开报告页，可浏览历史报告 | `ReportViewerWindow`，Markdown 渲染 |
-| 后台统一配置 API Key，用户不用管 | Key 只存在 Cloudflare Pages 的 Secret 环境变量里，前端永远拿不到 |
-| GitHub 推送到 Cloudflare 托管 | Cloudflare Pages 连 GitHub 仓库，自动构建部署 |
+- 打开网站先看到锁屏页，输密码进桌面
+- 桌面左上角是技能图标，**按英文 id 字母序**从左到右排列（industry-research → investment-checklist → investment-research → investment-team → private-company-research），视口不够宽会自动换到下一行
+- 图标本身就是技能名的 4 个汉字（分两行显示），不用图形图标
+- **单击**一个技能图标：激活视口正中央的搜索框，上方出现这个技能的用法提示（比如"请输入一只股票代码或公司名"）
+- **双击**一个技能图标：打开这个技能的详细介绍窗口
+- 搜索框里选好模型（DeepSeek/Claude/OpenAI/MiniMax），输入内容，点生成
+- 搜索框下方会提示当前选中模型的简短状态（比如"DeepSeek 状态正常，非实时数据"）——这是静态文案，不是实时探活检测
+- "研究报告"图标固定在右下角（类似 mac 默认垃圾桶的位置），双击打开 Finder 风格的报告列表，可按日期/文件名排序，双击某一份报告查看 Markdown 正文
 
 ## 目录结构
 
 ```
 ├── src/                  前端源码
-│   ├── components/       登录页、桌面、窗口、图标等组件
+│   ├── components/
+│   │   ├── LoginScreen.tsx        锁屏登录页
+│   │   ├── Desktop.tsx            桌面主界面（布局、图标排列）
+│   │   ├── IconTile.tsx           纯文字四字图标组件
+│   │   ├── CenterSearchBar.tsx    视口居中的搜索框
+│   │   ├── WindowFrame.tsx        通用窗口外壳（拖拽、层级、红黄绿按钮）
+│   │   ├── ReportsFolderWindow.tsx  报告列表（Finder 风格）
+│   │   ├── ReportViewerWindow.tsx   报告详情（Markdown 渲染）
+│   │   └── SkillInfoWindow.tsx      技能介绍
 │   └── lib/               zustand store、api 客户端
 ├── functions/            Cloudflare Pages Functions（后端）
 │   ├── _middleware.ts    拦截 /api/*，校验登录态
@@ -35,123 +43,114 @@
 │   └── lib/
 │       ├── env.ts         环境变量类型定义
 │       ├── auth.ts        session cookie 签发/校验
-│       ├── providers.ts   Claude/OpenAI/DeepSeek 统一调用
+│       ├── providers.ts   DeepSeek/Claude/OpenAI/MiniMax 统一调用
 │       ├── prompt.ts      把 Claude Code 专属 skill 模板改写成可直接调用的 prompt
 │       └── skills-data.ts 【自动生成，不要手改】
 ├── skills/                技能源文件（从 ai-berkshire 项目拷贝）
-│   ├── manifest.json      技能元数据（图标、名称、说明）
+│   ├── manifest.json      技能元数据（名称、用法提示、说明）
 │   └── *.md                技能的具体研究流程 prompt
-├── migrations/0001_init.sql   D1 建表语句
-├── scripts/generate-skills-data.mjs  构建期把 skills/ 打包进后端代码
-└── wrangler.toml
+├── migrations/0001_init.sql   D1 建表语句（要在 D1 Console 里分条粘贴执行，见下文）
+└── scripts/generate-skills-data.mjs  构建期把 skills/ 打包进后端代码
 ```
 
-## 关于技能模板的一点说明
-
-`skills/*.md` 原本是 Claude Code 的 slash command，依赖 Task 工具做多 Agent 并行、且要求"写入本地文件"。
-这套东西跑在 Cloudflare Functions 上没有文件系统也没有 Task 工具，所以 `functions/lib/prompt.ts`
-会在原始模板后面追加一段"运行环境说明"，让模型把多 Agent 并行的步骤收敛成一次性、结构化的单轮输出，
-并且优先用联网搜索获取真实数据（Claude 走的是 Anthropic 官方的 `web_search` 工具）。
-
-以后你要新增技能：在 `skills/` 下加一个 `.md` 文件 + 在 `manifest.json` 里加一条元数据即可，
-前端图标、后端调用会自动跟着 `manifest.json` 走，不需要改代码。
+以后你要新增技能：在 `skills/` 下加一个 `.md` 文件 + 在 `manifest.json` 里加一条元数据（记得给 `name` 凑够 4 个汉字，图标才好看）即可，前端图标、后端调用会自动跟着 `manifest.json` 走，不需要改代码。
 
 ## 各模型当前的限制（重要，直接影响报告质量）
 
-顶部搜索栏可以在生成时选模型，但四家现状不一样，用之前先看一眼：
-
 | Provider | 是否联网搜索 | 说明 |
 |---|---|---|
-| **DeepSeek（默认）** | ❌ 不联网 | 走标准 Chat Completions，只用模型自身知识回答。财务数据、股价、新闻可能是训练数据里的旧值，`prompt.ts` 会让模型主动标注"数据来源：模型知识，可能非最新"，但终究不是实时数据。优点是便宜、中文效果好，适合先跑通流程、或者对时效性要求不高的产业/框架类分析。 |
-| **Claude** | ✅ 唯一联网 | 接的是 Anthropic 官方 `web_search` 工具，能真的去抓最新股价、财报、新闻。四个 skill 原本的设计就是假定有联网能力的（"至少 2 个独立来源交叉验证"这类要求），**如果要的是真正能打的深度研报，目前只有这个分支靠谱**。成本相对更高。 |
-| **OpenAI** | ❌ 不联网 | 目前接的是普通 Chat Completions。要接联网搜索得改用 Responses API 的 `web_search` 工具，字段格式随官方迭代较快，接入前请对照你要用的模型当时的最新文档核实。 |
-| **MiniMax** | ❌ 不联网 | 走 MiniMax 官方 OpenAI 兼容端点。要注意它按量付费的 API Key 和"Coding Plan 订阅"额度是两套独立体系，充值前看清楚充的是哪一种。 |
+| **DeepSeek（默认）** | ❌ 不联网 | 走标准 Chat Completions，只用模型自身知识回答。财务数据、股价、新闻可能是训练数据里的旧值。优点是便宜、中文效果好，适合先跑通流程、或者对时效性要求不高的产业/框架类分析。 |
+| **Claude** | ✅ 唯一联网 | 接的是 Anthropic 官方 `web_search` 工具，能真的去抓最新股价、财报、新闻。**如果要的是真正能打的深度研报，目前只有这个分支靠谱**，成本相对更高。 |
+| **OpenAI** | ❌ 不联网 | 走普通 Chat Completions。要接联网搜索得改用 Responses API 的 `web_search` 工具，接入前请对照最新文档核实。 |
+| **MiniMax** | ❌ 不联网 | 走 MiniMax 官方 OpenAI 兼容端点。注意按量付费的 API Key 和"Coding Plan 订阅"是两套独立额度体系。 |
 
 **实际建议**：日常用 DeepSeek 便宜地跑，遇到需要认真做决策的标的，切到 Claude 让它联网核实一遍数据再看结论。
 
-## 本地开发
+## 部署到 Cloudflare Pages（全程网页操作，不需要 wrangler CLI）
 
-```bash
-# 1. 安装依赖
-npm install
+### 1. 代码进 GitHub
 
-# 2. 复制环境变量模板，填入你的密码和 API Key
-cp .dev.vars.example .dev.vars
+**方式 A：GitHub 网页上传** —— 建一个空仓库 → Add file → Upload files → 把项目文件夹内容拖进去 → Commit。
 
-# 3. 生成技能数据 + 初始化本地 D1
-npm run gen:skills
-npm run db:migrate:local
+**方式 B：GitHub Desktop** —— File → Add Local Repository → 选文件夹 → 创建仓库 → Publish repository。以后改了代码，在 GitHub Desktop 里能看到 diff，Commit + Push 两步就行。
 
-# 4. 起两个终端：
-#    一个跑前端 dev server（默认 5173，代理 /api 到 8788）
-npm run dev
-#    另一个跑 Cloudflare Functions 本地模拟（先要 npm run build 出 dist）
-npm run build
-npx wrangler pages dev dist --d1 DB=berkshire-desktop-db --local
+### 2. Cloudflare Pages 连仓库
+
+Dashboard → Workers & Pages → Create → Pages → Connect to Git → 选仓库：
+- Build command: `npm run build`
+- Build output directory: `dist`
+
+### 3. 建 D1 数据库并建表（纯网页）
+
+Dashboard → Storage & Databases → D1 → Create database，起个名字（比如 `berkshire-desktop-db`）。
+
+进数据库 → **Console** 标签页。**注意：D1 的网页 Console 一次只能执行一条 SQL 语句**，把 `migrations/0001_init.sql` 拆成下面 4 条，依次粘贴执行：
+
+```sql
+CREATE TABLE IF NOT EXISTS reports (
+  id TEXT PRIMARY KEY,
+  skill_id TEXT NOT NULL,
+  skill_name TEXT NOT NULL,
+  ticker TEXT NOT NULL,
+  title TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  provider TEXT NOT NULL,
+  model TEXT,
+  content TEXT,
+  error_message TEXT,
+  tokens_input INTEGER DEFAULT 0,
+  tokens_output INTEGER DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+```
+```sql
+CREATE INDEX IF NOT EXISTS idx_reports_created_at ON reports (created_at DESC);
+```
+```sql
+CREATE INDEX IF NOT EXISTS idx_reports_skill_id ON reports (skill_id);
+```
+```sql
+CREATE INDEX IF NOT EXISTS idx_reports_ticker ON reports (ticker);
 ```
 
-## 部署到 Cloudflare Pages
+### 4. 绑定 D1 到 Pages 项目
 
-1. **建 D1 数据库**
-   ```bash
-   npx wrangler login
-   npx wrangler d1 create berkshire-desktop-db
-   ```
-   把返回的 `database_id` 填进 `wrangler.toml` 的 `[[d1_databases]]` 里。
+Pages 项目 → Settings → Bindings → Add → D1 database：
+- Variable name 必须填 `DB`（代码里 `env.DB` 是写死的）
+- 选刚才建的数据库
 
-2. **推到 GitHub**
-   ```bash
-   git init
-   git add .
-   git commit -m "init: AI Berkshire Desktop"
-   git branch -M main
-   git remote add origin https://github.com/<你的用户名>/berkshire-desktop.git
-   git push -u origin main
-   ```
+> 项目里**没有 `wrangler.toml`**，所有绑定和环境变量都通过这里的 Dashboard 管理——之前如果你的仓库里还留着旧版本的 `wrangler.toml`，记得在 GitHub 网页上把它删掉提交，否则 Cloudflare 会认为配置由这个文件接管，Dashboard 的环境变量面板会被锁成只读。
 
-3. **在 Cloudflare 控制台连接仓库**
-   - Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git
-   - 选中这个仓库
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-   - 在 Settings → Functions → D1 database bindings 里把 `DB` 绑定到刚才建的数据库
-     （或者确认 `wrangler.toml` 里的绑定生效）
+### 5. 配置环境变量
 
-4. **配置 Secret 环境变量**（Settings → Environment variables，选择 Encrypt/Secret）
-   ```
-   SITE_PASSWORD=你的登录密码
-   SESSION_SECRET=一长串随机字符串
-   DEFAULT_PROVIDER=deepseek
-   DEEPSEEK_API_KEY=sk-xxxx
-   DEEPSEEK_MODEL=deepseek-chat
-   # 想用联网搜索能力时再加：
-   ANTHROPIC_API_KEY=sk-ant-xxxx
-   ANTHROPIC_MODEL=claude-sonnet-5
-   # 按需再加 OPENAI_API_KEY / MINIMAX_API_KEY
-   ```
-   也可以用命令行：
-   ```bash
-   npx wrangler pages secret put SITE_PASSWORD --project-name berkshire-desktop
-   npx wrangler pages secret put SESSION_SECRET --project-name berkshire-desktop
-   npx wrangler pages secret put DEEPSEEK_API_KEY --project-name berkshire-desktop
-   ```
+Pages 项目 → Settings → Environment variables，建议全部选 **Secret**（加密）：
+```
+SITE_PASSWORD=你的登录密码
+SESSION_SECRET=一长串随机字符串
+DEFAULT_PROVIDER=deepseek
+DEEPSEEK_API_KEY=sk-xxxx
+DEEPSEEK_MODEL=deepseek-chat
+```
+想用联网搜索能力时再加：
+```
+ANTHROPIC_API_KEY=sk-ant-xxxx
+ANTHROPIC_MODEL=claude-sonnet-5
+```
+按需再加 `OPENAI_API_KEY` / `MINIMAX_API_KEY`。
 
-5. **建线上表结构**
-   ```bash
-   npm run db:migrate:remote
-   ```
+### 6. 重新部署
 
-6. 之后每次 `git push`，Cloudflare Pages 会自动重新构建部署。
+改完 Bindings/环境变量后，回 Deployments 标签，对最近一次部署点 **Retry deployment** 让配置生效。
+
+打开 `你的项目名.pages.dev`，输密码进桌面，单击一个技能图标，输入内容试着生成一份报告。
 
 ## 已知限制 / 后续可以做的事
 
-- 报告生成是**同步**调用（Function 里等模型返回再写库）。Cloudflare Workers 对 HTTP 请求本身没有硬性墙钟时长限制，
-  只要浏览器标签页不关，慢一点也能等到；但如果关闭浏览器/断网，这次生成结果不会保留。想做成"关网页也继续跑"，
-  可以把生成逻辑迁移到 [Cloudflare Workflows](https://developers.cloudflare.com/workflows/) 或 Queues。
-- OpenAI 分支目前没接联网搜索工具（字段格式随官方 API 迭代较快，接入前建议对照你要用的模型的最新文档核实一遍）。
+- 报告生成是**同步**调用（Function 里等模型返回再写库）。Cloudflare Workers 对 HTTP 请求本身没有硬性墙钟时长限制，只要浏览器标签页不关，慢一点也能等到；但如果关闭浏览器/断网，这次生成结果不会保留。想做成"关网页也继续跑"，可以后续迁移到 Cloudflare Workflows 或 Queues。
+- "模型状态"那行文字是静态文案，不是每次都去实际探活；如果哪个 Provider 的 Key 失效了，要等真的生成报告失败才会看到错误提示。
+- 桌面图标目前是固定按字母序排列，不支持拖拽自定义位置（原本 React Flow 方案支持拖拽，但为了实现"自动响应式换行、稳定的字母序"，换成了普通响应式布局，两者暂时不可兼得）。
 - 密码是明文比较（存在 Secret 里，没有落库），单人使用场景足够；如果以后要开放给团队用，建议换成真正的多用户体系。
-- 桌面图标位置目前每次刷新会重置为默认网格布局（没有持久化拖拽后的坐标），如果想要"记住图标摆放位置"，
-  可以把坐标存进 `localStorage` 或者一个新的 D1 表。
 
 ## 免责声明
 

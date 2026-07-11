@@ -6,6 +6,7 @@ export interface SkillPublic {
   subtitle: string;
   icon: string;
   argHint: string;
+  usageHint: string;
   supportsMulti: boolean;
   description: string;
 }
@@ -42,6 +43,9 @@ interface AppState {
   skills: SkillPublic[];
   setSkills: (s: SkillPublic[]) => void;
 
+  activeSkillId: string | null;
+  setActiveSkillId: (id: string) => void;
+
   reports: ReportSummary[];
   setReports: (r: ReportSummary[]) => void;
   upsertReport: (r: ReportSummary) => void;
@@ -62,6 +66,9 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   skills: [],
   setSkills: (s) => set({ skills: s }),
+
+  activeSkillId: null,
+  setActiveSkillId: (id) => set({ activeSkillId: id }),
 
   reports: [],
   setReports: (r) => set({ reports: r }),
