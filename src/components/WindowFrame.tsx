@@ -18,8 +18,8 @@ export default function WindowFrame({
   zIndex,
   initialX = 16,
   initialY = 40,
-  width = 460,
-  height = 640,
+  width = 408,
+  height = 680,
   children
 }: WindowFrameProps) {
   const closeWindow = useAppStore((s) => s.closeWindow);
