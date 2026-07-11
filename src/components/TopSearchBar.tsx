@@ -2,6 +2,13 @@ import { useState, type FormEvent } from "react";
 import { useAppStore } from "../lib/store";
 import { api } from "../lib/api";
 
+const PROVIDERS: { id: string; label: string; note: string }[] = [
+  { id: "deepseek", label: "DeepSeek（默认）", note: "不联网，用模型自身知识，成本低" },
+  { id: "claude", label: "Claude", note: "唯一带联网搜索，数据更实时，成本较高" },
+  { id: "openai", label: "OpenAI", note: "不联网" },
+  { id: "minimax", label: "MiniMax", note: "不联网" }
+];
+
 export default function TopSearchBar() {
   const skills = useAppStore((s) => s.skills);
   const upsertReport = useAppStore((s) => s.upsertReport);
@@ -11,9 +18,11 @@ export default function TopSearchBar() {
 
   const [ticker, setTicker] = useState("");
   const [skillId, setSkillId] = useState(skills[0]?.id ?? "");
+  const [provider, setProvider] = useState("deepseek");
   const [error, setError] = useState("");
 
   const activeSkill = skills.find((s) => s.id === skillId) ?? skills[0];
+  const activeProvider = PROVIDERS.find((p) => p.id === provider);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -25,7 +34,7 @@ export default function TopSearchBar() {
     openWindow({ id: "reportsFolder", kind: "reportsFolder", title: "研究报告" });
 
     try {
-      const res = await api.generateReport(skillId, ticker.trim());
+      const res = await api.generateReport(skillId, ticker.trim(), provider);
       if (res.status === "done") {
         // 生成完成，直接打开报告
         openWindow({
@@ -72,6 +81,18 @@ export default function TopSearchBar() {
           </option>
         ))}
       </select>
+      <select
+        value={provider}
+        onChange={(e) => setProvider(e.target.value)}
+        title={activeProvider?.note}
+        className="bg-white/10 text-white text-sm rounded-full px-3 py-1 outline-none border border-white/10"
+      >
+        {PROVIDERS.map((p) => (
+          <option key={p.id} value={p.id} className="text-black">
+            {p.label}
+          </option>
+        ))}
+      </select>
       <button
         type="submit"
         disabled={generating || !ticker.trim()}
@@ -80,6 +101,11 @@ export default function TopSearchBar() {
       >
         {generating ? "生成中…" : "生成报告"}
       </button>
+      {activeProvider && !generating && (
+        <div className="absolute -bottom-5 left-4 text-white/30 text-[11px]">
+          {activeProvider.note}
+        </div>
+      )}
       {error && (
         <div className="absolute top-12 left-0 right-0 text-center text-red-300 text-xs">{error}</div>
       )}

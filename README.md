@@ -6,7 +6,7 @@
 - 后端：Cloudflare Pages Functions（无需单独服务器）
 - 存储：Cloudflare D1（报告元数据 + Markdown 正文）
 - 认证：单密码 + HMAC 签名 Cookie（个人使用场景，没有做多用户系统）
-- 模型：后台统一配置 API Key，支持 Claude / OpenAI / DeepSeek 切换
+- 模型：后台统一配置 API Key，**默认使用 DeepSeek**，Claude / OpenAI / MiniMax 作为可切换备选
 
 ## 功能对应关系
 
@@ -55,6 +55,19 @@
 
 以后你要新增技能：在 `skills/` 下加一个 `.md` 文件 + 在 `manifest.json` 里加一条元数据即可，
 前端图标、后端调用会自动跟着 `manifest.json` 走，不需要改代码。
+
+## 各模型当前的限制（重要，直接影响报告质量）
+
+顶部搜索栏可以在生成时选模型，但四家现状不一样，用之前先看一眼：
+
+| Provider | 是否联网搜索 | 说明 |
+|---|---|---|
+| **DeepSeek（默认）** | ❌ 不联网 | 走标准 Chat Completions，只用模型自身知识回答。财务数据、股价、新闻可能是训练数据里的旧值，`prompt.ts` 会让模型主动标注"数据来源：模型知识，可能非最新"，但终究不是实时数据。优点是便宜、中文效果好，适合先跑通流程、或者对时效性要求不高的产业/框架类分析。 |
+| **Claude** | ✅ 唯一联网 | 接的是 Anthropic 官方 `web_search` 工具，能真的去抓最新股价、财报、新闻。四个 skill 原本的设计就是假定有联网能力的（"至少 2 个独立来源交叉验证"这类要求），**如果要的是真正能打的深度研报，目前只有这个分支靠谱**。成本相对更高。 |
+| **OpenAI** | ❌ 不联网 | 目前接的是普通 Chat Completions。要接联网搜索得改用 Responses API 的 `web_search` 工具，字段格式随官方迭代较快，接入前请对照你要用的模型当时的最新文档核实。 |
+| **MiniMax** | ❌ 不联网 | 走 MiniMax 官方 OpenAI 兼容端点。要注意它按量付费的 API Key 和"Coding Plan 订阅"额度是两套独立体系，充值前看清楚充的是哪一种。 |
+
+**实际建议**：日常用 DeepSeek 便宜地跑，遇到需要认真做决策的标的，切到 Claude 让它联网核实一遍数据再看结论。
 
 ## 本地开发
 
@@ -108,16 +121,19 @@ npx wrangler pages dev dist --d1 DB=berkshire-desktop-db --local
    ```
    SITE_PASSWORD=你的登录密码
    SESSION_SECRET=一长串随机字符串
-   DEFAULT_PROVIDER=claude
+   DEFAULT_PROVIDER=deepseek
+   DEEPSEEK_API_KEY=sk-xxxx
+   DEEPSEEK_MODEL=deepseek-chat
+   # 想用联网搜索能力时再加：
    ANTHROPIC_API_KEY=sk-ant-xxxx
    ANTHROPIC_MODEL=claude-sonnet-5
-   # 按需再加 OPENAI_API_KEY / DEEPSEEK_API_KEY
+   # 按需再加 OPENAI_API_KEY / MINIMAX_API_KEY
    ```
    也可以用命令行：
    ```bash
    npx wrangler pages secret put SITE_PASSWORD --project-name berkshire-desktop
    npx wrangler pages secret put SESSION_SECRET --project-name berkshire-desktop
-   npx wrangler pages secret put ANTHROPIC_API_KEY --project-name berkshire-desktop
+   npx wrangler pages secret put DEEPSEEK_API_KEY --project-name berkshire-desktop
    ```
 
 5. **建线上表结构**

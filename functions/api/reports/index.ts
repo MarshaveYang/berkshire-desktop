@@ -31,7 +31,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const skillId = (body.skillId || "").trim();
   const ticker = (body.ticker || "").trim();
-  const provider = (body.provider || env.DEFAULT_PROVIDER || "claude") as Provider;
+  const provider = (body.provider || env.DEFAULT_PROVIDER || "deepseek") as Provider;
 
   if (!skillId || !ticker) {
     return json({ error: "缺少 skillId 或 ticker" }, 400);

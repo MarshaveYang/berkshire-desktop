@@ -16,7 +16,8 @@ database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
 # Pages 项目 -> Settings -> Environment variables 配置为 Secret：
 #   SITE_PASSWORD        登录密码
 #   SESSION_SECRET        任意一长串随机字符串，用于签名 session cookie
-#   DEFAULT_PROVIDER      claude | openai | deepseek
-#   ANTHROPIC_API_KEY     ANTHROPIC_MODEL（可选，默认 claude-sonnet-5）
+#   DEFAULT_PROVIDER      deepseek | claude | openai | minimax（默认 deepseek）
+#   DEEPSEEK_API_KEY      DEEPSEEK_MODEL（可选，默认 deepseek-chat）
+#   ANTHROPIC_API_KEY     ANTHROPIC_MODEL（可选，默认 claude-sonnet-5；唯一带联网搜索的分支）
 #   OPENAI_API_KEY        OPENAI_MODEL（可选）
-#   DEEPSEEK_API_KEY      DEEPSEEK_MODEL（可选）
+#   MINIMAX_API_KEY       MINIMAX_MODEL（可选，默认 MiniMax-M2.1）
