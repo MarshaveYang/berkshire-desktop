@@ -25,12 +25,14 @@ export default function WindowFrame({
   const closeWindow = useAppStore((s) => s.closeWindow);
   const focusWindow = useAppStore((s) => s.focusWindow);
   const [pos, setPos] = useState({ x: initialX, y: initialY });
+  const [isMaximized, setIsMaximized] = useState(false);
   const dragState = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(
     null
   );
 
   function onTitlePointerDown(e: ReactPointerEvent) {
     focusWindow(id);
+    if (isMaximized) return; // 最大化状态下不允许拖拽
     dragState.current = { startX: e.clientX, startY: e.clientY, origX: pos.x, origY: pos.y };
     (e.target as Element).setPointerCapture(e.pointerId);
   }
@@ -46,10 +48,14 @@ export default function WindowFrame({
     dragState.current = null;
   }
 
+  const frameStyle = isMaximized
+    ? { left: 16, top: 40, right: 16, bottom: 16, width: "auto", height: "auto", zIndex }
+    : { left: pos.x, top: pos.y, width, height, zIndex };
+
   return (
     <div
       className="absolute rounded-xl overflow-hidden shadow-2xl glass-panel-strong flex flex-col text-ink"
-      style={{ left: pos.x, top: pos.y, width, height, zIndex }}
+      style={frameStyle}
       onPointerDownCapture={() => focusWindow(id)}
     >
       <div
@@ -57,15 +63,19 @@ export default function WindowFrame({
         onPointerDown={onTitlePointerDown}
         onPointerMove={onTitlePointerMove}
         onPointerUp={onTitlePointerUp}
+        onDoubleClick={() => setIsMaximized((v) => !v)}
       >
         <button
           onClick={() => closeWindow(id)}
           className="traffic-light bg-red-500 hover:brightness-110"
           title="关闭"
         />
-        <span className="traffic-light bg-yellow-500 opacity-70" />
-        <span className="traffic-light bg-mint-500 opacity-70" />
-        <div className="flex-1 text-center text-sm text-ink2 truncate pr-12">{title}</div>
+        <button
+          onClick={() => setIsMaximized((v) => !v)}
+          className="traffic-light bg-mint-500 hover:brightness-110"
+          title={isMaximized ? "还原" : "最大化"}
+        />
+        <div className="flex-1 text-center text-sm text-ink2 truncate pr-9">{title}</div>
       </div>
       <div className="flex-1 overflow-auto">{children}</div>
     </div>
