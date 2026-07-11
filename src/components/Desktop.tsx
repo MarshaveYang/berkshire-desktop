@@ -28,7 +28,7 @@ export default function Desktop() {
   const sortedSkills = [...skills].sort((a, b) => a.id.localeCompare(b.id));
 
   return (
-    <div className="w-screen h-screen desktop-wallpaper relative overflow-hidden text-ink">
+    <div className="app-viewport desktop-wallpaper relative overflow-hidden text-ink">
       {/* 顶部菜单栏 */}
       <div className="fixed top-0 left-0 right-0 h-7 glass-panel flex items-center px-4 text-xs z-40 justify-between text-ink2">
         <div className="font-medium text-ink">AI Berkshire</div>

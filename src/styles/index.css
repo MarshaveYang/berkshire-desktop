@@ -60,3 +60,19 @@ body {
   letter-spacing: 0.02em;
   line-height: 1.35;
 }
+
+/* 修复移动端 Safari/Chrome 的 100vh 问题：地址栏收起/展开时，
+   传统 100vh 是"加载那一刻"的静态值，不会跟着地址栏动画实时更新，
+   导致登录后布局延伸到可视区域外面，必须手动刷新才能"矫正"一次。
+   这里用三层兜底：
+   1. 100vh —— 最老旧浏览器的保底值
+   2. var(--app-height) —— 由 JS 监听 visualViewport 实时写入，覆盖第 1 层
+   3. 100dvh —— 现代浏览器原生支持的动态视口单位，自动跟随地址栏收起/展开，覆盖前两层
+   浏览器会忽略自己不认识的属性值，所以老浏览器会停在第 2 层，新浏览器会用第 3 层。 */
+.app-viewport {
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: var(--app-height, 100vh);
+  height: 100dvh;
+}

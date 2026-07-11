@@ -29,7 +29,7 @@ export default function LoginScreen() {
   const dateStr = now.toLocaleDateString("zh-CN", { month: "long", day: "numeric", weekday: "long" });
 
   return (
-    <div className="w-screen h-screen desktop-wallpaper flex flex-col items-center justify-center text-ink select-none">
+    <div className="app-viewport desktop-wallpaper flex flex-col items-center justify-center text-ink select-none">
       <div className="text-center mb-10">
         <div className="text-7xl font-light tracking-wide text-ink">{timeStr}</div>
         <div className="text-lg text-ink2/70 mt-1">{dateStr}</div>
