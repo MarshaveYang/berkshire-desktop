@@ -14,8 +14,10 @@ export default function ReportsFolderWindow({ zIndex }: { zIndex: number }) {
   const reports = useAppStore((s) => s.reports);
   const setReports = useAppStore((s) => s.setReports);
   const openWindow = useAppStore((s) => s.openWindow);
+  const closeWindow = useAppStore((s) => s.closeWindow);
   const [sort, setSort] = useState<"date" | "name">("date");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function refresh() {
     const { reports } = await api.listReports(sort, order);
@@ -29,6 +31,20 @@ export default function ReportsFolderWindow({ zIndex }: { zIndex: number }) {
 
   function openReport(id: string, title: string) {
     openWindow({ id: `report-${id}`, kind: "reportViewer", title, payload: { reportId: id } });
+  }
+
+  async function handleDelete(id: string, title: string) {
+    if (!window.confirm(`确定删除「${title}」？删除后无法恢复。`)) return;
+    setDeletingId(id);
+    try {
+      await api.deleteReport(id);
+      closeWindow(`report-${id}`); // 如果这份报告的详情窗口正开着，一并关掉
+      await refresh();
+    } catch (err: any) {
+      window.alert(err.message || "删除失败");
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   function toggleSort(key: "date" | "name") {
@@ -68,6 +84,7 @@ export default function ReportsFolderWindow({ zIndex }: { zIndex: number }) {
                   <th className="font-normal py-1 px-2">技能</th>
                   <th className="font-normal py-1 px-2">状态</th>
                   <th className="font-normal py-1 px-2">生成时间</th>
+                  <th className="font-normal py-1 px-2 w-10"></th>
                 </tr>
               </thead>
               <tbody>
@@ -75,7 +92,7 @@ export default function ReportsFolderWindow({ zIndex }: { zIndex: number }) {
                   <tr
                     key={r.id}
                     onDoubleClick={() => r.status === "done" && openReport(r.id, r.title)}
-                    className={`border-t border-ink/5 hover:bg-mint-100/50 cursor-default ${
+                    className={`group border-t border-ink/5 hover:bg-mint-100/50 cursor-default ${
                       r.status === "done" ? "cursor-pointer" : "opacity-60"
                     }`}
                   >
@@ -84,6 +101,20 @@ export default function ReportsFolderWindow({ zIndex }: { zIndex: number }) {
                     <td className="py-2 px-2 text-ink2/70">{STATUS_LABEL[r.status] ?? r.status}</td>
                     <td className="py-2 px-2 text-ink2/50">
                       {new Date(r.created_at).toLocaleString("zh-CN")}
+                    </td>
+                    <td className="py-2 px-2 text-right">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(r.id, r.title);
+                        }}
+                        disabled={deletingId === r.id}
+                        title="删除这份报告"
+                        className="opacity-0 group-hover:opacity-100 text-ink2/40 hover:text-red-600
+                                   transition-opacity disabled:opacity-100 disabled:text-ink2/30"
+                      >
+                        {deletingId === r.id ? "…" : "✕"}
+                      </button>
                     </td>
                   </tr>
                 ))}
