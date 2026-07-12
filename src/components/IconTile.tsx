@@ -19,12 +19,14 @@ export default function IconTile({ text4, label, active, onClick, onDoubleClick 
     >
       <div
         className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                    text-ink text-base icon-glyph shadow-sm border transition-all
+                    text-ink text-base icon-glyph shadow-sm border
+                    transition-[background-color,border-color,box-shadow,transform] duration-200
                     ${
                       active
-                        ? "backdrop-blur-xl bg-mint-200/80 border-mint-500/60 shadow-lg scale-105"
+                        ? "backdrop-blur-xl bg-mint-200/80 border-mint-500/60 shadow-lg"
                         : "backdrop-blur-sm bg-white/20 border-transparent hover:bg-white/35"
                     }`}
+        style={{ transform: active ? "translateZ(0) scale(1.05)" : "translateZ(0)" }}
       >
         <span>{line1}</span>
         <span>{line2}</span>

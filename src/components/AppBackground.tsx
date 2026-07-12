@@ -14,7 +14,10 @@ const ENABLED_WAVES: Array<"top" | "middle" | "bottom"> = ["middle", "top", "bot
 
 export default function AppBackground() {
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none">
+    <div
+      className="absolute inset-0 z-0 pointer-events-none"
+      style={{ transform: "translateZ(0)", isolation: "isolate" }}
+    >
       <Suspense fallback={null}>
         <FloatingLinesBackground
           linesGradient={LINES_GRADIENT}

@@ -29,6 +29,10 @@ body {
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   border: 1px solid rgba(22, 90, 60, 0.14);
+  /* 强制独立 GPU 合成层：避免旁边 DOM 变化时被迫跟底下的 WebGL 画布一起重绘、
+     在 Mac 上的 Safari/Chrome 表现为周期性闪烁。 */
+  transform: translateZ(0);
+  will-change: backdrop-filter;
 }
 
 .glass-panel-strong {
@@ -36,6 +40,8 @@ body {
   backdrop-filter: blur(26px);
   -webkit-backdrop-filter: blur(26px);
   border: 1px solid rgba(22, 90, 60, 0.16);
+  transform: translateZ(0);
+  will-change: backdrop-filter;
 }
 
 .window-titlebar {
@@ -43,6 +49,8 @@ body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(22, 90, 60, 0.1);
+  transform: translateZ(0);
+  will-change: backdrop-filter;
 }
 
 .traffic-light {
