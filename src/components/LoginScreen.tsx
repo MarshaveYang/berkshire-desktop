@@ -1,8 +1,7 @@
-import { useState, lazy, Suspense, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { api } from "../lib/api";
 import { useAppStore } from "../lib/store";
-
-const FloatingLinesBackground = lazy(() => import("./FloatingLinesBackground"));
+import AppBackground from "./AppBackground";
 
 export default function LoginScreen() {
   const setAuthenticated = useAppStore((s) => s.setAuthenticated);
@@ -32,19 +31,7 @@ export default function LoginScreen() {
 
   return (
     <div className="app-viewport desktop-wallpaper relative flex flex-col items-center justify-center text-ink select-none">
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Suspense fallback={null}>
-          <FloatingLinesBackground
-            linesGradient={["#10B981", "#198c66", "#1a5542"]}
-            enabledWaves={["middle", "top", "bottom"]}
-            lineCount={9}
-            lineDistance={80}
-            animationSpeed={0.5}
-            bendRadius={15}
-            bendStrength={3.5}
-          />
-        </Suspense>
-      </div>
+      <AppBackground />
 
       <div className="relative z-10 flex flex-col items-center">
         <div className="text-center mb-10">
