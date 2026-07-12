@@ -6,7 +6,7 @@ const PROVIDERS: { id: string; label: string; status: string }[] = [
   { id: "deepseek", label: "DeepSeek", status: "DeepSeek 状态正常，非实时数据" },
   { id: "claude", label: "Claude", status: "Claude 状态不可用，联网获取实时数据" },
   { id: "openai", label: "OpenAI", status: "OpenAI 状态不可用，非实时数据" },
-  { id: "minimax", label: "MiniMax", status: "MiniMax 状态不可用，非实时数据" }
+  { id: "minimax", label: "MiniMax", status: "MiniMax 状态正常，非实时数据" }
 ];
 
 export default function CenterSearchBar() {
@@ -57,7 +57,7 @@ export default function CenterSearchBar() {
 
   return (
     <div className="flex flex-col items-center gap-2 w-[420px]">
-      <div className="h-4 text-xs text-ink2 text-center">
+      <div className="h-4 text-xs text-white text-center drop-shadow-sm">
         {ready ? `您正使用${activeSkill!.name}：${activeSkill!.usageHint}` : "点击一个技能图标开始"}
       </div>
 
@@ -95,7 +95,7 @@ export default function CenterSearchBar() {
         </button>
       </form>
 
-      <div className="h-4 text-[11px] text-ink2/70 text-center">
+      <div className="h-4 text-[11px] text-white/90 text-center drop-shadow-sm">
         {error ? <span className="text-red-600">{error}</span> : activeProvider?.status}
       </div>
     </div>

@@ -52,11 +52,11 @@ export default function LoginScreen() {
           <div className="text-lg text-ink2/70 mt-1">{dateStr}</div>
         </div>
 
-        <div className="w-16 h-16 rounded-2xl glass-panel-strong flex flex-col items-center justify-center icon-glyph text-ink text-base mb-4 shadow-md">
+        <div className="w-16 h-16 rounded-2xl bg-mint-200/70 border border-mint-500/50 flex flex-col items-center justify-center icon-glyph text-ink text-base mb-4 shadow-md">
           <span>投研</span>
           <span>桌面</span>
         </div>
-        <div className="text-ink2 mb-4">买股票，从 AI Berkshire 开始</div>
+        <div className="text-white mb-4">买股票，从 AI Berkshire 开始</div>
 
         <form onSubmit={handleSubmit} className="flex flex-col items-center gap-3">
           <input

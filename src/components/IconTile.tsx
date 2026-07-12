@@ -22,8 +22,8 @@ export default function IconTile({ text4, label, active, onClick, onDoubleClick 
                     text-ink text-base icon-glyph shadow-sm border transition-all
                     ${
                       active
-                        ? "bg-mint-200/70 border-mint-500/50 shadow-md scale-105"
-                        : "glass-panel border-transparent group-hover:bg-white/70"
+                        ? "backdrop-blur-xl bg-mint-200/80 border-mint-500/60 shadow-lg scale-105"
+                        : "backdrop-blur-sm bg-white/20 border-transparent hover:bg-white/35"
                     }`}
       >
         <span>{line1}</span>
