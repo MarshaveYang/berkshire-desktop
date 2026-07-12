@@ -6,7 +6,7 @@
 - 后端：Cloudflare Pages Functions（无需单独服务器）
 - 存储：Cloudflare D1（报告元数据 + Markdown 正文）
 - 认证：单密码 + HMAC 签名 Cookie（个人使用场景，没有做多用户系统）
-- 模型：后台统一配置 API Key，**默认 DeepSeek**，Claude / OpenAI / MiniMax 作为可切换备选
+- 模型：后台统一配置 API Key，**默认 DeepSeek**，Claude / OpenAI 作为可切换备选（后两者都支持真实联网搜索）
 - 部署方式：**全程网页操作**——GitHub 网页上传或 GitHub Desktop 推代码，Cloudflare Dashboard 建库、配变量、连仓库，不需要装 wrangler CLI
 
 ## 界面交互说明
@@ -16,7 +16,7 @@
 - 图标本身就是技能名的 4 个汉字（分两行显示），不用图形图标
 - **单击**一个技能图标：激活视口正中央的搜索框，上方出现这个技能的用法提示（比如"请输入一只股票代码或公司名"）
 - **双击**一个技能图标：打开这个技能的详细介绍窗口
-- 搜索框里选好模型（DeepSeek/Claude/OpenAI/MiniMax），输入内容，点生成
+- 搜索框里选好模型（DeepSeek/Claude/OpenAI），输入内容，点生成
 - 搜索框下方会提示当前选中模型的简短状态（比如"DeepSeek 状态正常，非实时数据"）——这是静态文案，不是实时探活检测
 - "研究报告"图标固定在右下角（类似 mac 默认垃圾桶的位置），双击打开 Finder 风格的报告列表，可按日期/文件名排序，双击某一份报告查看 Markdown 正文
 
@@ -43,7 +43,7 @@
 │   └── lib/
 │       ├── env.ts         环境变量类型定义
 │       ├── auth.ts        session cookie 签发/校验
-│       ├── providers.ts   DeepSeek/Claude/OpenAI/MiniMax 统一调用
+│       ├── providers.ts   DeepSeek/Claude/OpenAI 统一调用
 │       ├── prompt.ts      把 Claude Code 专属 skill 模板改写成可直接调用的 prompt
 │       └── skills-data.ts 【自动生成，不要手改】
 ├── skills/                技能源文件（从 ai-berkshire 项目拷贝）
@@ -61,10 +61,9 @@
 |---|---|---|
 | **DeepSeek（默认）** | ❌ 不联网 | 走标准 Chat Completions，只用模型自身知识回答。财务数据、股价、新闻可能是训练数据里的旧值。优点是便宜、中文效果好，适合先跑通流程、或者对时效性要求不高的产业/框架类分析。 |
 | **Claude** | ✅ 唯一联网 | 接的是 Anthropic 官方 `web_search` 工具，能真的去抓最新股价、财报、新闻。**如果要的是真正能打的深度研报，目前只有这个分支靠谱**，成本相对更高。 |
-| **OpenAI** | ❌ 不联网 | 走普通 Chat Completions。要接联网搜索得改用 Responses API 的 `web_search` 工具，接入前请对照最新文档核实。 |
-| **MiniMax** | ❌ 不联网 | 走 MiniMax 官方 OpenAI 兼容端点。注意按量付费的 API Key 和"Coding Plan 订阅"是两套独立额度体系。 |
+| **OpenAI** | ✅ 联网 | 接的是 Responses API 的 `web_search` 工具（不是 Chat Completions），需要 `gpt-5.4`/`gpt-5.5` 这类支持该工具的模型，普通 API Key 即可，不需要额外申请权限。 |
 
-**实际建议**：日常用 DeepSeek 便宜地跑，遇到需要认真做决策的标的，切到 Claude 让它联网核实一遍数据再看结论。
+**实际建议**：日常用 DeepSeek 便宜地跑，遇到需要认真做决策的标的，切到 Claude 或 OpenAI 让它联网核实一遍数据再看结论。
 
 ## 部署到 Cloudflare Pages（全程网页操作，不需要 wrangler CLI）
 
@@ -137,7 +136,7 @@ DEEPSEEK_MODEL=deepseek-chat
 ANTHROPIC_API_KEY=sk-ant-xxxx
 ANTHROPIC_MODEL=claude-sonnet-5
 ```
-按需再加 `OPENAI_API_KEY` / `MINIMAX_API_KEY`。
+按需再加 `OPENAI_API_KEY`（记得 `OPENAI_MODEL` 要填支持 Responses API `web_search` 工具的模型，比如 `gpt-5.4`）。
 
 ### 6. 重新部署
 
@@ -155,3 +154,25 @@ ANTHROPIC_MODEL=claude-sonnet-5
 ## 免责声明
 
 本项目仅供学习和研究目的使用，所有报告内容由 AI 生成，不构成任何投资建议。
+
+## 本地构建（可选，主要用来自查代码有没有写错）
+
+项目的主路径是"改完直接推 GitHub，让 Cloudflare 在云端构建"，本地环境不是必须的。但如果想在推送前自己先跑一遍确认没有明显错误，可以：
+
+```bash
+npm install
+npm run build
+```
+
+`npm run build` 会依次做三件事：把 `skills/` 目录打包进后端代码（`gen:skills`）、跑一遍 TypeScript 类型检查（`tsc -b`）、最后用 Vite 打包出 `dist/` 目录。这一步能跑通，基本就能保证 Cloudflare 那边的构建也不会失败。
+
+如果只是想看看界面改动的样子，可以用：
+
+```bash
+npm run dev
+```
+
+会在 `http://localhost:5173` 起一个开发服务器，能看到页面布局、样式、交互效果。**但登录、生成报告这些需要调 `/api/*` 的功能在这个模式下会报错**——因为 `/api` 后端是 Cloudflare Pages Functions，本地 Vite 开发服务器不会启动它，这是预期行为，不是 bug。真正端到端的功能验证，还是要推到 Cloudflare 上用 `*.pages.dev` 域名测。
+
+`dist/` 目录、`node_modules/` 都在 `.gitignore` 里，不会被提交，也不需要手动清理。
+

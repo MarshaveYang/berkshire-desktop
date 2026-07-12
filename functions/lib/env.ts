@@ -6,7 +6,7 @@ export interface Env {
   SITE_PASSWORD: string; // 明文密码，仅用于登录校验，存在 secret 里
   SESSION_SECRET: string; // 用于签名 cookie 的随机字符串（跟密码分开，避免改密码后所有会话失效之外还泄露密码本身）
 
-  // 默认使用的模型 Provider：deepseek | claude | openai | minimax
+  // 默认使用的模型 Provider：deepseek | claude | openai
   DEFAULT_PROVIDER: string;
 
   // 各 Provider 的 API Key（只在后台配置，前端永远拿不到）
@@ -17,8 +17,5 @@ export interface Env {
   ANTHROPIC_MODEL?: string; // 例如 claude-sonnet-5
 
   OPENAI_API_KEY?: string;
-  OPENAI_MODEL?: string; // 例如 gpt-5.1
-
-  MINIMAX_API_KEY?: string;
-  MINIMAX_MODEL?: string; // 例如 MiniMax-M2.1
+  OPENAI_MODEL?: string; // 例如 gpt-5.4，走 Responses API + web_search
 }

@@ -5,8 +5,7 @@ import { api } from "../lib/api";
 const PROVIDERS: { id: string; label: string; status: string }[] = [
   { id: "deepseek", label: "DeepSeek", status: "DeepSeek 状态正常，非实时数据" },
   { id: "claude", label: "Claude", status: "Claude 状态不可用，联网获取实时数据" },
-  { id: "openai", label: "OpenAI", status: "OpenAI 状态不可用，非实时数据" },
-  { id: "minimax", label: "MiniMax", status: "MiniMax 状态正常，非实时数据" }
+  { id: "openai", label: "OpenAI", status: "OpenAI 状态不可用，联网获取实时数据" }
 ];
 
 export default function CenterSearchBar() {
