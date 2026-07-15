@@ -29,9 +29,9 @@ export default function ReportViewerWindow({
 
   return (
     <WindowFrame id={id} title={title} zIndex={zIndex} width={760} height={600}>
-      <div className="p-6 prose prose-sm max-w-none prose-headings:text-ink prose-p:text-ink2 prose-strong:text-ink prose-a:text-mint-700">
-        {loading && <div className="text-ink2/60">加载中…</div>}
-        {error && <div className="text-red-600">加载失败：{error}</div>}
+      <div className="p-6 prose prose-invert prose-sm max-w-none prose-a:text-mint-400">
+        {loading && <div className="text-white/50">加载中…</div>}
+        {error && <div className="text-red-400">加载失败：{error}</div>}
         {!loading && !error && (
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         )}

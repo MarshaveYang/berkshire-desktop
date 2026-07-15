@@ -89,7 +89,7 @@ export default function WindowFrame({
 
   return (
     <div
-      className="absolute rounded-xl overflow-hidden shadow-2xl glass-panel-strong flex flex-col text-ink"
+      className="absolute rounded-xl overflow-hidden shadow-2xl glass-panel-strong flex flex-col text-white"
       style={frameStyle}
       onPointerDownCapture={() => focusWindow(id)}
     >
@@ -111,7 +111,7 @@ export default function WindowFrame({
           className="traffic-light bg-mint-500 hover:brightness-110"
           title={isMaximized ? "还原" : "最大化"}
         />
-        <div className="flex-1 text-center text-sm text-ink2 truncate pr-9">{title}</div>
+        <div className="flex-1 text-center text-sm text-white/70 truncate pr-9">{title}</div>
       </div>
 
       <div className="flex-1 overflow-auto">{children}</div>
@@ -121,7 +121,7 @@ export default function WindowFrame({
           onPointerDown={onResizePointerDown}
           onPointerMove={onResizePointerMove}
           onPointerUp={onResizePointerUp}
-          className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize flex items-end justify-end p-0.5 text-ink2/40 hover:text-ink2/70"
+          className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize flex items-end justify-end p-0.5 text-white/30 hover:text-white/60"
           style={{ touchAction: "none" }}
           title="拖拽调整大小"
         >

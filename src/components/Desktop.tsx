@@ -3,7 +3,6 @@ import { useAppStore } from "../lib/store";
 import { api } from "../lib/api";
 import IconTile from "./IconTile";
 import CenterSearchBar from "./CenterSearchBar";
-import AppBackground from "./AppBackground";
 import ReportsFolderWindow from "./ReportsFolderWindow";
 import ReportViewerWindow from "./ReportViewerWindow";
 import SkillInfoWindow from "./SkillInfoWindow";
@@ -29,12 +28,10 @@ export default function Desktop() {
   const sortedSkills = [...skills].sort((a, b) => a.id.localeCompare(b.id));
 
   return (
-    <div className="app-viewport desktop-wallpaper relative overflow-hidden text-ink">
-      {/* 动态线条背景，叠在渐变之上、图标和窗口之下 */}
-      <AppBackground />
+    <div className="app-viewport desktop-wallpaper relative overflow-hidden text-white">
       {/* 顶部菜单栏 */}
-      <div className="fixed top-0 left-0 right-0 h-7 glass-panel flex items-center px-4 text-xs z-40 justify-between text-ink2">
-        <div className="font-medium text-ink">AI Berkshire</div>
+      <div className="fixed top-0 left-0 right-0 h-7 glass-panel flex items-center px-4 text-xs z-40 justify-between text-white/60">
+        <div className="font-medium text-white">AI Berkshire</div>
         <div className="flex items-center gap-4">
           <span>{now.toLocaleDateString("zh-CN", { month: "short", day: "numeric", weekday: "short" })}</span>
           <span>{now.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}</span>
@@ -43,7 +40,7 @@ export default function Desktop() {
               await api.logout();
               window.location.reload();
             }}
-            className="hover:text-ink"
+            className="hover:text-white"
           >
             锁定
           </button>
@@ -80,9 +77,9 @@ export default function Desktop() {
         />
       </div>
 
-      {/* 搜索框：视口正中央 */}
+      {/* 搜索框：从视口正中央往下移一段距离 */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-20">
-        <div className="pointer-events-auto">
+        <div className="pointer-events-auto translate-y-24">
           <CenterSearchBar />
         </div>
       </div>

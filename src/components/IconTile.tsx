@@ -19,12 +19,12 @@ export default function IconTile({ text4, label, active, onClick, onDoubleClick 
     >
       <div
         className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                    text-ink text-base icon-glyph shadow-sm border
-                    transition-[background-color,border-color,box-shadow,transform] duration-200
+                    text-base icon-glyph shadow-sm border
+                    transition-[background-color,border-color,box-shadow,transform,color] duration-200
                     ${
                       active
-                        ? "backdrop-blur-xl bg-mint-200/80 border-mint-500/60 shadow-lg"
-                        : "backdrop-blur-sm bg-white/20 border-transparent hover:bg-white/35"
+                        ? "backdrop-blur-xl bg-emerald-900/70 border-emerald-400/50 text-white shadow-lg"
+                        : "backdrop-blur-sm bg-white/90 border-white/60 text-ink hover:bg-white"
                     }`}
         style={{ transform: active ? "translateZ(0) scale(1.05)" : "translateZ(0)" }}
       >
@@ -32,7 +32,7 @@ export default function IconTile({ text4, label, active, onClick, onDoubleClick 
         <span>{line2}</span>
       </div>
       {label && (
-        <div className="text-[11px] text-ink2 text-center leading-tight px-1">{label}</div>
+        <div className="text-[11px] text-white/70 text-center leading-tight px-1">{label}</div>
       )}
     </button>
   );

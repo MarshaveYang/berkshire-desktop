@@ -30,16 +30,17 @@ export default function LoginScreen() {
   const dateStr = now.toLocaleDateString("zh-CN", { month: "long", day: "numeric", weekday: "long" });
 
   return (
-    <div className="app-viewport desktop-wallpaper relative flex flex-col items-center justify-center text-ink select-none">
+    <div className="app-viewport desktop-wallpaper relative flex flex-col items-center justify-center text-white select-none">
+      {/* 登录页保留背景动画 */}
       <AppBackground />
 
       <div className="relative z-10 flex flex-col items-center">
         <div className="text-center mb-10">
-          <div className="text-7xl font-light tracking-wide text-ink">{timeStr}</div>
-          <div className="text-lg text-ink2/70 mt-1">{dateStr}</div>
+          <div className="text-7xl font-light tracking-wide text-white">{timeStr}</div>
+          <div className="text-lg text-white/60 mt-1">{dateStr}</div>
         </div>
 
-        <div className="w-16 h-16 rounded-2xl bg-mint-200/70 border border-mint-500/50 flex flex-col items-center justify-center icon-glyph text-ink text-base mb-4 shadow-md">
+        <div className="w-16 h-16 rounded-2xl backdrop-blur-xl bg-emerald-900/70 border border-emerald-400/50 flex flex-col items-center justify-center icon-glyph text-white text-base mb-4 shadow-lg">
           <span>投研</span>
           <span>桌面</span>
         </div>
@@ -52,10 +53,10 @@ export default function LoginScreen() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="输入密码"
-            className="w-64 px-4 py-2 rounded-full glass-panel text-ink text-center
-                       placeholder-ink2/40 outline-none focus:border-mint-500/50 transition-colors"
+            className="w-64 px-4 py-2 rounded-full glass-panel text-white text-center
+                       placeholder-white/40 outline-none focus:border-emerald-400/60 transition-colors"
           />
-          {error && <div className="text-red-600 text-sm">{error}</div>}
+          {error && <div className="text-red-400 text-sm">{error}</div>}
           <button
             type="submit"
             disabled={loading}

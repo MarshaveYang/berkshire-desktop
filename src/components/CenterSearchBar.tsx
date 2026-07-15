@@ -55,28 +55,35 @@ export default function CenterSearchBar() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2 w-[420px]">
+    <div className="flex flex-col items-center gap-2 w-[440px]">
+      <div className="text-center px-4 mb-1">
+        <div className="text-white/85 text-sm italic leading-snug">
+          "Price is what you pay, value is what you get."
+        </div>
+        <div className="text-white/50 text-xs mt-0.5">— Warren Buffett</div>
+      </div>
+
       <div className="h-4 text-xs text-white text-center drop-shadow-sm">
         {ready ? `您正使用${activeSkill!.name}：${activeSkill!.usageHint}` : "点击一个技能图标开始"}
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className={`flex items-center gap-2 w-full glass-panel-strong rounded-full px-3 py-2 shadow-xl
+        className={`flex items-center gap-2 w-full glass-panel rounded-full px-3 py-2 shadow-xl
                     transition-opacity ${ready ? "" : "opacity-60"}`}
       >
-        <span className="text-ink2/60 pl-2">🔍</span>
+        <span className="text-white/40 pl-2">🔍</span>
         <input
           value={ticker}
           onChange={(e) => setTicker(e.target.value)}
           disabled={!ready}
           placeholder={ready ? "输入内容后回车生成" : "请先选择技能"}
-          className="bg-transparent outline-none text-ink placeholder-ink2/40 flex-1 min-w-0 disabled:cursor-not-allowed"
+          className="bg-transparent outline-none text-white placeholder-white/40 flex-1 min-w-0 disabled:cursor-not-allowed"
         />
         <select
           value={provider}
           onChange={(e) => setProvider(e.target.value)}
-          className="bg-mint-100/70 text-ink text-sm rounded-full px-3 py-1 outline-none border border-mint-500/20"
+          className="bg-white/10 text-white text-sm rounded-full px-3 py-1 outline-none border border-white/15"
         >
           {PROVIDERS.map((p) => (
             <option key={p.id} value={p.id} className="text-ink">
@@ -94,8 +101,8 @@ export default function CenterSearchBar() {
         </button>
       </form>
 
-      <div className="h-4 text-[11px] text-white/90 text-center drop-shadow-sm">
-        {error ? <span className="text-red-600">{error}</span> : activeProvider?.status}
+      <div className="h-4 text-[11px] text-white/70 text-center drop-shadow-sm">
+        {error ? <span className="text-red-400">{error}</span> : activeProvider?.status}
       </div>
     </div>
   );
