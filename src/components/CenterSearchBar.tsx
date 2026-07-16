@@ -56,11 +56,11 @@ export default function CenterSearchBar() {
 
   return (
     <div className="flex flex-col items-center gap-2 w-[440px]">
-      <div className="text-center px-4 mb-6">
-        <div className="text-white/85 text-2xl italic leading-snug">
+      <div className="w-full px-4 mb-6">
+        <div className="text-white/85 text-2xl italic leading-snug text-left">
           "Price is what you pay, value is what you get."
         </div>
-        <div className="text-white/50 text-sm mt-2">— Warren Buffett</div>
+        <div className="text-white/50 text-sm mt-2 text-right">— Warren Buffett</div>
       </div>
 
       <div className="h-4 text-xs text-white text-center drop-shadow-sm">
