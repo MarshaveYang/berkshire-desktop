@@ -61,7 +61,7 @@ export default function CenterSearchBar() {
           "Price is what you pay,
         </div>
         <div className="text-white/85 text-2xl italic leading-snug text-center mt-1">
-          value is what you get.“
+          value is what you get."
         </div>  
         <div className="text-white/50 text-sm mt-3 text-right">— Warren Buffett</div>
       </div>
